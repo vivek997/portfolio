@@ -1,26 +1,222 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --bg: #05070a;
+  --bg-panel: #0d1117;
+  --bg-panel-alt: #10161f;
+  --border: #21262d;
+  --text: #c9d1d9;
+  --muted: #6e7681;
+  --green: #39d97a;
+  --green-bright: #5cf7a3;
+  --cyan: #22d3ee;
+  --amber: #e3b341;
+  --pink: #f472b6;
+  --red: #f85149;
+}
+
+/* CRT color modes -- swaps the primary accent while keeping cyan/amber/pink
+   as secondary accents intact. Applied via [data-theme] on <html>. */
+[data-theme="amber"] {
+  --green: #f2b84a;
+  --green-bright: #ffd27a;
+}
+[data-theme="cyan"] {
+  --green: #22d3ee;
+  --green-bright: #7ee9fb;
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-bg: var(--bg);
+  --color-panel: var(--bg-panel);
+  --color-panel-alt: var(--bg-panel-alt);
+  --color-border: var(--border);
+  --color-text: var(--text);
+  --color-muted: var(--muted);
+  --color-green: var(--green);
+  --color-green-bright: var(--green-bright);
+  --color-cyan: var(--cyan);
+  --color-amber: var(--amber);
+  --color-pink: var(--pink);
+  --color-red: var(--red);
+  --font-mono: var(--font-jetbrains-mono);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-jetbrains-mono), ui-monospace, "SFMono-Regular", Menlo, monospace;
+  position: relative;
+}
+
+/* Faint background grid */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  background-image:
+    linear-gradient(rgba(57, 217, 122, 0.045) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(57, 217, 122, 0.045) 1px, transparent 1px);
+  background-size: 42px 42px;
+  mask-image: radial-gradient(ellipse 80% 60% at 50% 0%, #000 40%, transparent 100%);
+}
+
+/* Scanline / CRT overlay */
+.scanlines {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 40;
+  opacity: 0.5;
+  background: repeating-linear-gradient(
+    to bottom,
+    rgba(0, 0, 0, 0) 0px,
+    rgba(0, 0, 0, 0) 2px,
+    rgba(0, 0, 0, 0.12) 3px
+  );
+  mix-blend-mode: overlay;
+}
+
+.scanlines-local {
+  opacity: 0.5;
+  background: repeating-linear-gradient(
+    to bottom,
+    rgba(0, 0, 0, 0) 0px,
+    rgba(0, 0, 0, 0) 2px,
+    rgba(0, 0, 0, 0.18) 3px
+  );
+  mix-blend-mode: overlay;
+}
+
+.vignette {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 39;
+  background: radial-gradient(ellipse at center, transparent 55%, rgba(0, 0, 0, 0.55) 100%);
+}
+
+::selection {
+  background: var(--green);
+  color: #05070a;
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+::-webkit-scrollbar-track {
+  background: var(--bg);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border-radius: 6px;
+  border: 2px solid var(--bg);
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--green);
+}
+
+.text-glow {
+  text-shadow: 0 0 8px currentColor;
+}
+
+@keyframes blink {
+  0%, 49% { opacity: 1; }
+  50%, 100% { opacity: 0; }
+}
+.animate-blink {
+  animation: blink 1s steps(1) infinite;
+}
+
+@keyframes flicker {
+  0%, 100% { opacity: 1; }
+  92% { opacity: 1; }
+  93% { opacity: 0.7; }
+  94% { opacity: 1; }
+  96% { opacity: 0.85; }
+  97% { opacity: 1; }
+}
+.animate-flicker {
+  animation: flicker 6s infinite;
+}
+
+/* Mostly-static text with a brief RGB-split "glitch" flicker every few
+   seconds, rather than a continuous distortion (keeps the name readable). */
+.hero-name {
+  color: #f3f6f8;
+  text-shadow:
+    0 0 14px color-mix(in srgb, var(--green-bright) 45%, transparent),
+    0 0 36px color-mix(in srgb, var(--green-bright) 20%, transparent);
+}
+
+@keyframes glitch-burst {
+  0%, 93%, 100% {
+    opacity: 0;
+    transform: translate(0, 0);
+    clip-path: inset(0 0 100% 0);
+  }
+  93.6% { opacity: 0.9; clip-path: inset(8% 0 58% 0); transform: translate(-3px, -1px); }
+  94.6% { opacity: 0.9; clip-path: inset(56% 0 8% 0); transform: translate(3px, 1px); }
+  95.6% { opacity: 0.9; clip-path: inset(30% 0 42% 0); transform: translate(-2px, 2px); }
+  96.4% {
+    opacity: 0;
+    transform: translate(0, 0);
+    clip-path: inset(0 0 100% 0);
+  }
+}
+.glitch {
+  position: relative;
+}
+.glitch::before,
+.glitch::after {
+  content: attr(data-text);
+  position: absolute;
+  inset: 0;
+  background: var(--bg);
+  opacity: 0;
+}
+.glitch::before {
+  color: var(--cyan);
+  animation: glitch-burst 6.4s infinite steps(1, end);
+  left: 2px;
+}
+.glitch::after {
+  color: var(--pink);
+  animation: glitch-burst 6.4s infinite steps(1, end);
+  animation-delay: 0.12s;
+  left: -2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .glitch::before,
+  .glitch::after {
+    animation: none;
+    opacity: 0;
+  }
+}
+
+.terminal-shadow {
+  box-shadow: 0 0 0 1px rgba(57, 217, 122, 0.08), 0 20px 60px -20px rgba(0, 0, 0, 0.8),
+    0 0 40px -15px rgba(57, 217, 122, 0.15);
+}
+
+@keyframes shake {
+  10%, 90% { transform: translate3d(-1px, 0, 0); }
+  20%, 80% { transform: translate3d(2px, 0, 0); }
+  30%, 50%, 70% { transform: translate3d(-3px, 0, 0); }
+  40%, 60% { transform: translate3d(3px, 0, 0); }
+}
+.animate-shake {
+  animation: shake 0.5s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
 }

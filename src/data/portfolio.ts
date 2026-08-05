@@ -41,6 +41,7 @@ export type Experience = {
   current: boolean;
   hash: string;
   location: string;
+  client?: string;
   bullets: string[];
   projects?: { name: string; description: string; tech?: string }[];
 };
@@ -54,12 +55,26 @@ export const experience: Experience[] = [
     current: true,
     hash: "a1b2c3d",
     location: "New Delhi (NCR), India",
+    client: "BNY (The Bank of New York Mellon Corporation)",
     bullets: [
-      // NOTE: placeholder copy - update with real project specifics whenever you'd like.
-      "Working as a GenAI Python Developer, building LLM-powered automation and intelligent backend systems.",
-      "Collaborating with cross-functional teams to design, develop, and deploy scalable GenAI-driven applications.",
-      "Applying Python engineering practices to integrate large language models into production workflows.",
-      "(Placeholder - swap in your real project details, tech stack, and impact here.)",
+      "Assigned to LTIMindtree's engagement with BNY (The Bank of New York Mellon Corporation), building LLM-powered automation and intelligent backend systems.",
+      "Driving two key GenAI initiatives, AADI and TREX, from design through production deployment.",
+      "Collaborating with cross-functional teams to design, develop, and deploy scalable, production-ready GenAI-driven applications.",
+      "Applying human-in-the-loop review patterns and solid Python engineering practices to safely integrate LLMs into enterprise workflows.",
+    ],
+    projects: [
+      {
+        name: "AADI - AI-Powered Test Management",
+        description:
+          "End-to-end AI-driven test management pipeline: pulls user story details from JIRA, evaluates story quality, and generates test cases via an LLM. After human-in-the-loop review and approval, cases are uploaded to Zephyr/JIRA. The LLM then generates test scripts, which are validated, approved, and pushed to GitLab for execution, with results published back to Zephyr/JIRA.",
+        tech: "Python, LLMs, JIRA API, Zephyr, GitLab",
+      },
+      {
+        name: "TREX - Internal AI Agents Testing Suite",
+        description:
+          "Internal testing suite integrating multiple AI agents to enable end-to-end agent workflow testing, validating agent inputs and outputs across the pipeline to ensure reliability before deployment.",
+        tech: "Python, LLM Agents, Test Automation",
+      },
     ],
   },
   {

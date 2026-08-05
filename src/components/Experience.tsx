@@ -58,14 +58,17 @@ export default function Experience() {
                 <span className="text-cyan">{job.company}</span>
               </h3>
               <p className="mt-0.5 text-xs text-muted">{job.location}</p>
+              {job.client && (
+                <p className="mt-1 text-xs text-muted">
+                  <span className="text-amber">Client:</span> {job.client}
+                </p>
+              )}
 
               <ul className="mt-4 space-y-2 text-sm text-text/90">
                 {job.bullets.map((b) => (
                   <li key={b} className="flex gap-2">
                     <span className="mt-1 text-green">+</span>
-                    <span className={b.startsWith("(Placeholder") ? "italic text-muted" : ""}>
-                      {b}
-                    </span>
+                    <span>{b}</span>
                   </li>
                 ))}
               </ul>
